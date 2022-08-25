@@ -9,7 +9,6 @@ import (
 
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/graphql-go/graphql"
@@ -25,8 +24,7 @@ type postData struct {
 
 // Handler handles GraphQL API requests
 type Handler struct {
-	outlog *log.Logger
-	errlog *log.Logger
+	logger *logging.Logger
 }
 
 // ServeHTTP fulfills the http.Handler contract for Handler
@@ -46,7 +44,7 @@ func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 	})
 
 	if err := json.NewEncoder(writer).Encode(result); err != nil {
-		handler.errlog.Printf("Could not write result to response: %s", err)
+		handler.logger.Error("Could not write result to response: %s", err)
 	}
 }
 
@@ -63,7 +61,6 @@ func (handler *Handler) Address() string {
 // New returns a new Handler
 func New() *Handler {
 	return &Handler{
-		outlog: logging.NewLog(prefix),
-		errlog: logging.NewError(prefix),
+		logger: logging.New(prefix),
 	}
 }
