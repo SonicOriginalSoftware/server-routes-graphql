@@ -3,12 +3,9 @@
 package graphql
 
 import (
-	"server/env"
 	"server/logging"
-	"server/net/local"
 
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/graphql-go/graphql"
@@ -51,11 +48,6 @@ func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 // Prefix is the subdomain prefix
 func (handler *Handler) Prefix() string {
 	return prefix
-}
-
-// Address returns the address the Handler will service
-func (handler *Handler) Address() string {
-	return env.Address(prefix, fmt.Sprintf("%v.%v", prefix, local.Path("")))
 }
 
 // New returns a new Handler
