@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	lib "git.nathanblair.rocks/server"
+	"git.nathanblair.rocks/server/handler"
 
 	"git.nathanblair.rocks/routes/graphql"
 )
@@ -59,8 +60,8 @@ lSLm75AMeTQghz1CfVEJnXc9
 -----END PRIVATE KEY-----`)
 
 func TestHandler(t *testing.T) {
-	subdomains := []lib.SubdomainHandler{
-		graphql.New(),
+	subdomains := handler.Handlers{
+		graphql.Prefix: graphql.New(),
 	}
 
 	cert, err := tls.X509KeyPair(cert, key)
