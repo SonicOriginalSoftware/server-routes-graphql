@@ -3,12 +3,12 @@
 package graphql
 
 import (
-	"server/logging"
-
 	"encoding/json"
 	"net/http"
 
 	"github.com/graphql-go/graphql"
+
+	"git.nathanblair.rocks/server/logging"
 )
 
 const prefix = "graphql"
