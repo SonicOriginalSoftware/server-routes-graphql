@@ -8,11 +8,12 @@ import (
 
 	"github.com/graphql-go/graphql"
 
+	"git.nathanblair.rocks/server/handlers"
 	"git.nathanblair.rocks/server/logging"
 )
 
-// Prefix is the name used to identify the service
-const Prefix = "gql"
+// Name is the name used to identify the service
+const Name = "gql"
 
 type postData struct {
 	Variables map[string]interface{} `json:"variables"`
@@ -22,7 +23,6 @@ type postData struct {
 
 // Handler handles GraphQL API requests
 type Handler struct {
-	http.Handler
 	logger *logging.Logger
 }
 
@@ -30,7 +30,7 @@ type Handler struct {
 func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	var jsonData postData
 	if err := json.NewDecoder(request.Body).Decode(&jsonData); err != nil {
-		writer.WriteHeader(400)
+		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -48,8 +48,10 @@ func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 }
 
 // New returns a new Handler
-func New() *Handler {
-	return &Handler{
-		logger: logging.New(Prefix),
-	}
+func New() (handler *Handler) {
+	logger := logging.New(Name)
+	handler = &Handler{logger}
+	handlers.Register(Name, handler, logger)
+
+	return
 }

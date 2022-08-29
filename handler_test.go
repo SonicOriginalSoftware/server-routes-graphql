@@ -5,35 +5,40 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 
 	"git.nathanblair.rocks/routes/graphql"
 	lib "git.nathanblair.rocks/server"
-	"git.nathanblair.rocks/server/handler"
 )
 
+var certs []tls.Certificate
+
 func TestHandler(t *testing.T) {
-	subdomains := handler.Handlers{graphql.Prefix: graphql.New()}
+	route := fmt.Sprintf("localhost/%v/", graphql.Name)
+	t.Setenv(fmt.Sprintf("%v_SERVE_ADDRESS", strings.ToUpper(graphql.Name)), route)
 
-	var certs []tls.Certificate
-	ctx, cancelContext := context.WithCancel(context.Background())
+	_ = graphql.New()
 
-	exitCode, address := lib.Run(ctx, subdomains, certs)
+	ctx, cancelFunction := context.WithCancel(context.Background())
+
+	exitCode, address := lib.Run(ctx, certs)
 	defer close(exitCode)
 
-	url := fmt.Sprintf("http://%v.%v", graphql.Prefix, address)
+	// TODO modify the request to send a proper graphql request
+	url := fmt.Sprintf("http://%v/%v/", address, graphql.Name)
 	response, err := http.DefaultClient.Get(url)
 	if err != nil {
 		t.Fatalf("%v\n", err)
 	}
 
-	cancelContext()
+	cancelFunction()
 
 	if returnCode := <-exitCode; returnCode != 0 {
 		t.Fatalf("Server errored: %v", returnCode)
 	}
 
-	if response.Status != http.StatusText(http.StatusNotImplemented) && response.StatusCode != http.StatusNotImplemented {
+	if response.Status != http.StatusText(http.StatusBadRequest) && response.StatusCode != http.StatusBadRequest {
 		t.Fatalf("Server returned: %v", response.Status)
 	}
 }
