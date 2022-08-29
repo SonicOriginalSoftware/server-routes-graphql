@@ -12,7 +12,7 @@ import (
 )
 
 // Prefix is the name used to identify the service
-const Prefix = "graphql"
+const Prefix = "gql"
 
 type postData struct {
 	Variables map[string]interface{} `json:"variables"`
@@ -22,6 +22,7 @@ type postData struct {
 
 // Handler handles GraphQL API requests
 type Handler struct {
+	http.Handler
 	logger *logging.Logger
 }
 
