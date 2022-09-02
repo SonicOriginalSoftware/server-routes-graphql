@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"git.nathanblair.rocks/routes/graphql"
-	lib "git.nathanblair.rocks/server"
+	"git.sonicoriginal.software/routes/graphql"
+	lib "git.sonicoriginal.software/server"
 )
 
 var certs []tls.Certificate
