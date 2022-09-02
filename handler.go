@@ -23,14 +23,14 @@ type postData struct {
 
 // Handler handles GraphQL API requests
 type Handler struct {
-	logger *logging.Logger
+	logger logging.Log
 }
 
 // ServeHTTP fulfills the http.Handler contract for Handler
 func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	var jsonData postData
 	if err := json.NewDecoder(request.Body).Decode(&jsonData); err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -44,6 +44,7 @@ func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 
 	if err := json.NewEncoder(writer).Encode(result); err != nil {
 		handler.logger.Error("Could not write result to response: %s", err)
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
 
