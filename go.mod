@@ -8,6 +8,6 @@ require (
 )
 
 replace (
-	git.sonicoriginal.software/server => github.com/SonicOriginalSoftware/server v0.0.0
 	git.sonicoriginal.software/routes/graphql => github.com/SonicOriginalSoftware/server-routes-graphql v0.0.0
+	git.sonicoriginal.software/server => github.com/SonicOriginalSoftware/server v0.0.0
 )

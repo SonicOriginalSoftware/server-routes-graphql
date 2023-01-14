@@ -18,12 +18,10 @@ func TestHandler(t *testing.T) {
 	route := fmt.Sprintf("localhost/%v/", graphql.Name)
 	t.Setenv(fmt.Sprintf("%v_SERVE_ADDRESS", strings.ToUpper(graphql.Name)), route)
 
-	_ = graphql.New()
+	graphql.New()
 
 	ctx, cancelFunction := context.WithCancel(context.Background())
-
-	exitCode, address := lib.Run(ctx, certs)
-	defer close(exitCode)
+	address, errChan := lib.Run(ctx, certs)
 
 	// TODO modify the request to send a proper graphql request
 	url := fmt.Sprintf("http://%v/%v/", address, graphql.Name)
@@ -34,8 +32,8 @@ func TestHandler(t *testing.T) {
 
 	cancelFunction()
 
-	if returnCode := <-exitCode; returnCode != 0 {
-		t.Fatalf("Server errored: %v", returnCode)
+	if err := <-errChan; err != nil {
+		t.Fatalf("Server errored: %v", err)
 	}
 
 	if response.Status != http.StatusText(http.StatusBadRequest) && response.StatusCode != http.StatusBadRequest {
