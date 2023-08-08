@@ -1,13 +1,9 @@
-module git.sonicoriginal.software/routes/graphql
+module git.sonicoriginal.software/routes/graphql.git
 
 go 1.19
 
 require (
-	git.sonicoriginal.software/server v0.0.0
-	github.com/graphql-go/graphql v0.8.0
-)
-
-replace (
-	git.sonicoriginal.software/routes/graphql => github.com/SonicOriginalSoftware/server-routes-graphql v0.0.0
-	git.sonicoriginal.software/server => github.com/SonicOriginalSoftware/server v0.0.0
+	git.sonicoriginal.software/logger.git v1.0.2
+	git.sonicoriginal.software/server.git/v2 v2.0.0-rc6
+	github.com/graphql-go/graphql v0.8.1
 )

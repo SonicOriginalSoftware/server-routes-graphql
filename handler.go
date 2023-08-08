@@ -5,15 +5,16 @@ package graphql
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/graphql-go/graphql"
 
-	"git.sonicoriginal.software/server/handlers"
-	"git.sonicoriginal.software/server/logging"
+	"git.sonicoriginal.software/logger.git"
+	"git.sonicoriginal.software/server.git/v2"
 )
 
-// Name is the name used to identify the service
-const Name = "gql"
+// name is the name used to identify the service
+const name = "gql"
 
 type postData struct {
 	Variables map[string]interface{} `json:"variables"`
@@ -22,12 +23,12 @@ type postData struct {
 }
 
 // Handler handles GraphQL API requests
-type Handler struct {
-	logger logging.Log
+type handler struct {
+	logger logger.Log
 }
 
 // ServeHTTP fulfills the http.Handler contract for Handler
-func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+func (h *handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	var jsonData postData
 	if err := json.NewDecoder(request.Body).Decode(&jsonData); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
@@ -43,16 +44,19 @@ func (handler *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 	})
 
 	if err := json.NewEncoder(writer).Encode(result); err != nil {
-		handler.logger.Error("Could not write result to response: %s", err)
+		h.logger.Error("Could not write result to response: %s", err)
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
 
 // New returns a new Handler
-func New() (handler *Handler) {
-	logger := logging.New(Name)
-	handler = &Handler{logger}
-	handlers.Register(Name, "", Name, handler, logger)
+func New(mux *http.ServeMux) (route string) {
+	logger := logger.New(
+		name,
+		logger.DefaultSeverity,
+		os.Stdout,
+		os.Stderr,
+	)
 
-	return
+	return server.RegisterHandler(name, &handler{logger}, mux)
 }
