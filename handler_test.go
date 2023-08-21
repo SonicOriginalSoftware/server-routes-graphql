@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"testing"
 
-	"git.sonicoriginal.software/routes/graphql.git"
+	graphql "git.sonicoriginal.software/server-routes-graphql.git"
 	"git.sonicoriginal.software/server.git/v2"
 )
 

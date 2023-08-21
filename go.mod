@@ -1,4 +1,4 @@
-module git.sonicoriginal.software/routes/graphql.git
+module git.sonicoriginal.software/server-routes-graphql.git
 
 go 1.19
 
